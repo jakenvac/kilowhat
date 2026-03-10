@@ -2,7 +2,9 @@
 
 ## What This Is
 
-An offline-first mobile application for electric vehicle owners to quickly calculate charging times and energy requirements. The app helps users estimate how long it will take to charge their EV based on current battery state, target charge level, and charger specifications.
+**KiloWhat?** is an offline-first mobile application for electric vehicle owners to quickly calculate charging times and energy requirements. The app helps users estimate how long it will take to charge their EV based on current battery state, target charge level, and charger specifications.
+
+The name "KiloWhat?" is a playful take on kilowatt-hours (kWh) - the exact question EV owners ask when trying to figure out charging.
 
 ## Core Features
 

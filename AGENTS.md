@@ -1,4 +1,4 @@
-# Agent Guidelines for EV Charge Calculator
+# Agent Guidelines for KiloWhat?
 
 This document provides coding standards and operational guidelines for AI agents working in this codebase.
 

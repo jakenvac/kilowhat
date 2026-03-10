@@ -2,7 +2,7 @@
 
 ## System Overview
 
-This is a React Native mobile application with a simple three-layer architecture:
+**KiloWhat?** is a React Native mobile application with a simple three-layer architecture:
 1. **UI Layer** - React Native screen components
 2. **Storage Layer** - AsyncStorage data access functions
 3. **Data Layer** - TypeScript type definitions

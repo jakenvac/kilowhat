@@ -1,4 +1,6 @@
-# EV Charge Calculator
+# KiloWhat?
+
+**kWh? No problem.**
 
 A simple, privacy-focused mobile app for calculating electric vehicle charging times and energy requirements. Works completely offline with no account required.
 
@@ -238,7 +240,7 @@ Contributions are welcome! Please:
 
 ## License
 
-<!-- Add your license here -->
+MIT License - Free and open source
 
 ## Support
 
@@ -246,4 +248,4 @@ For issues, questions, or suggestions, please open an issue on GitHub.
 
 ---
 
-**Made for EV owners who want a simple, private, offline charging calculator.**
+**KiloWhat? - Making EV charging math simple.**
