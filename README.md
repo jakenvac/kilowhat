@@ -6,10 +6,10 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
 
 [<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="60">](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/jakenvac/kilowhat)
 
-![Platform Support](https://img.shields.io/badge/platform-Android-green)
-![React Native](https://img.shields.io/badge/React%20Native-0.83.2-61dafb)
-![Expo](https://img.shields.io/badge/Expo-~55.0.5-000020)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178c6)
+![Platform Support](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
 ## Features
 
