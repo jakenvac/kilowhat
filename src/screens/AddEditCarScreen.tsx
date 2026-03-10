@@ -67,9 +67,14 @@ export function AddEditCarScreen({ route, navigation }: Props) {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView 
+        contentContainerStyle={styles.container} 
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <Field label="Car name" hint="e.g. Tesla Model 3">
           <TextInput
             style={styles.standaloneInput}
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     gap: 24,
+    paddingBottom: 100,
   },
   field: {
     gap: 8,

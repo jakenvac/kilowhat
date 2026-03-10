@@ -276,6 +276,31 @@ await addCar(car);
    - Coding patterns or conventions → Update AGENTS.md
    - User setup, installation, or usage → Update README.md
 
+## Git Workflow
+
+### Committing Changes
+
+**IMPORTANT: Never commit changes without explicit user confirmation.**
+
+When changes are ready to commit:
+1. Show the user what has changed (`git status`, `git diff`)
+2. Describe what you changed and why
+3. **Ask the user if they want to commit**
+4. Only proceed with commit if user explicitly says yes
+
+**Example:**
+```
+I've fixed the keyboard avoiding issue in SettingsScreen and AddEditCarScreen.
+
+Changes:
+- Modified src/screens/SettingsScreen.tsx
+- Modified src/screens/AddEditCarScreen.tsx
+
+Would you like me to commit these changes?
+```
+
+**Never assume the user wants changes committed immediately.**
+
 ## Documentation Maintenance
 
 ### When to Update Documentation

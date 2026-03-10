@@ -64,7 +64,7 @@ export function CalculatorScreen({ navigation }: Props) {
       headerRight: () => (
         <Pressable onPress={() => navigation.navigate('Settings')} hitSlop={12}>
           <Text style={styles.settingsCog}>
-            <MaterialDesignIcons name="cog-outline" style={styles.settingsCog}/>
+            <MaterialDesignIcons name="cog" style={styles.settingsCog}/>
           </Text>
         </Pressable>
       ),
@@ -205,7 +205,7 @@ export function CalculatorScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   settingsCog: {
-    color: '#aaa',
+    color: '#eee',
     fontSize: 24,
   },
   container: {

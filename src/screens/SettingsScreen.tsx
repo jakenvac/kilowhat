@@ -1,9 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -32,123 +29,110 @@ export function SettingsScreen({ navigation }: Props) {
     });
   }, []);
 
-  async function handleSave() {
-    const parsedEfficiency = parseFloat(efficiency);
-    const parsedMaxOutput = parseFloat(maxOutput);
-
-    if (isNaN(parsedEfficiency) || parsedEfficiency <= 0 || parsedEfficiency > 100) {
-      Alert.alert('Validation', 'Charger efficiency must be between 1 and 100.');
-      return;
+  async function handleEfficiencyChange(value: string) {
+    setEfficiency(value);
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed) && parsed > 0 && parsed <= 100) {
+      const current = await loadSettings();
+      await saveSettings({ ...current, chargerEfficiency: parsed });
     }
-    if (isNaN(parsedMaxOutput) || parsedMaxOutput <= 0) {
-      Alert.alert('Validation', 'Charger max output must be a positive number.');
-      return;
-    }
+  }
 
+  async function handleMaxOutputChange(value: string) {
+    setMaxOutput(value);
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed) && parsed > 0) {
+      const current = await loadSettings();
+      await saveSettings({ ...current, chargerMaxOutputKw: parsed });
+    }
+  }
+
+  async function handleAutoFocusChange(value: boolean) {
+    setAutoFocus(value);
     const current = await loadSettings();
-    await saveSettings({
-      ...current,
-      chargerEfficiency: parsedEfficiency,
-      chargerMaxOutputKw: parsedMaxOutput,
-      autoFocusCurrentCharge: autoFocus,
-    });
-    navigation.goBack();
+    await saveSettings({ ...current, autoFocusCurrentCharge: value });
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <ScrollView 
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <Pressable
+        style={styles.manageCarsButton}
+        onPress={() => navigation.navigate('CarManagement')}
+      >
+        <Text style={styles.manageCarsText}>Manage Cars</Text>
+      </Pressable>
 
-        <Pressable
-          style={styles.manageCarsButton}
-          onPress={() => navigation.navigate('CarManagement')}
-        >
-          <Text style={styles.manageCarsText}>Manage Cars</Text>
-        </Pressable>
-        <View style={styles.field}>
-          <View style={styles.fieldHeader}>
-            <Text style={styles.fieldLabel}>Charger efficiency</Text>
-            <Text style={styles.fieldHint}>Typical home 7kW wallbox: 88%</Text>
-          </View>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              value={efficiency}
-              onChangeText={setEfficiency}
-              keyboardType="numeric"
-              placeholder="88"
-              placeholderTextColor="#555"
-              maxLength={5}
-              returnKeyType="done"
-              autoFocus
-            />
-            <Text style={styles.unit}>%</Text>
-          </View>
+      <View style={styles.field}>
+        <View style={styles.fieldHeader}>
+          <Text style={styles.fieldLabel}>Charger efficiency</Text>
+          <Text style={styles.fieldHint}>Typical home 7kW wallbox: 88%</Text>
+        </View>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            value={efficiency}
+            onChangeText={handleEfficiencyChange}
+            keyboardType="numeric"
+            placeholder="88"
+            placeholderTextColor="#555"
+            maxLength={5}
+            returnKeyType="done"
+          />
+          <Text style={styles.unit}>%</Text>
+        </View>
+        <Text style={styles.description}>
+          The percentage of grid energy that actually reaches your battery. Accounts for losses
+          in the wallbox and your car's onboard charger.
+        </Text>
+      </View>
+
+      <View style={styles.field}>
+        <View style={styles.fieldHeader}>
+          <Text style={styles.fieldLabel}>Charger max output</Text>
+          <Text style={styles.fieldHint}>Standard home wallbox: 7kW</Text>
+        </View>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            value={maxOutput}
+            onChangeText={handleMaxOutputChange}
+            keyboardType="decimal-pad"
+            placeholder="7"
+            placeholderTextColor="#555"
+            maxLength={5}
+            returnKeyType="done"
+          />
+          <Text style={styles.unit}>kW</Text>
+        </View>
+      </View>
+
+      <View style={styles.toggleRow}>
+        <View style={styles.toggleText}>
+          <Text style={styles.fieldLabel}>Auto-focus current charge</Text>
           <Text style={styles.description}>
-            The percentage of grid energy that actually reaches your battery. Accounts for losses
-            in the wallbox and your car's onboard charger.
+            Automatically open the keyboard on the current charge field when the app opens.
           </Text>
         </View>
-
-        <View style={styles.field}>
-          <View style={styles.fieldHeader}>
-            <Text style={styles.fieldLabel}>Charger max output</Text>
-            <Text style={styles.fieldHint}>Standard home wallbox: 7kW</Text>
-          </View>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              value={maxOutput}
-              onChangeText={setMaxOutput}
-              keyboardType="decimal-pad"
-              placeholder="7"
-              placeholderTextColor="#555"
-              maxLength={5}
-              returnKeyType="done"
-            />
-            <Text style={styles.unit}>kW</Text>
-          </View>
-        </View>
-
-        <View style={styles.toggleRow}>
-          <View style={styles.toggleText}>
-            <Text style={styles.fieldLabel}>Auto-focus current charge</Text>
-            <Text style={styles.description}>
-              Automatically open the keyboard on the current charge field when the app opens.
-            </Text>
-          </View>
-          <Switch
-            value={autoFocus}
-            onValueChange={setAutoFocus}
-            trackColor={{ false: '#2a2a2a', true: '#00c896' }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        <View style={styles.actions}>
-          <Pressable style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveButtonText}>Save Settings</Text>
-          </Pressable>
-          <Pressable style={styles.cancelButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <Switch
+          value={autoFocus}
+          onValueChange={handleAutoFocusChange}
+          trackColor={{ false: '#2a2a2a', true: '#00c896' }}
+          thumbColor="#fff"
+        />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: '#111',
-  },
   container: {
     padding: 24,
     gap: 24,
+    paddingBottom: 40,
   },
   field: {
     gap: 8,
@@ -204,10 +188,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 6,
   },
-  actions: {
-    gap: 12,
-    marginTop: 8,
-  },
   manageCarsButton: {
     borderRadius: 12,
     padding: 16,
@@ -217,29 +197,6 @@ const styles = StyleSheet.create({
   },
   manageCarsText: {
     color: '#aaa',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  saveButton: {
-    backgroundColor: '#00c896',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  cancelButton: {
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#2a2a2a',
-  },
-  cancelButtonText: {
-    color: '#555',
     fontSize: 16,
     fontWeight: '500',
   },

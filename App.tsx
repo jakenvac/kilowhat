@@ -28,7 +28,7 @@ export default function App() {
           <Stack.Screen
             name="Calculator"
             component={CalculatorScreen}
-            options={{ title: 'EV Charge Calculator' }}
+            options={{ title: 'KiloWhat?' }}
           />
           <Stack.Screen
             name="CarManagement"
