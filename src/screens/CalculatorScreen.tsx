@@ -48,7 +48,10 @@ export function CalculatorScreen({ navigation }: Props) {
     if (loaded.length > 0) {
       setSelectedIndex(0);
       if (!targetEditedByUser.current) {
-        setTargetSoc(String(loaded[0].defaultTargetSoc));
+        const firstCar = loaded[0];
+        if (firstCar) {
+          setTargetSoc(String(firstCar.defaultTargetSoc));
+        }
       }
       if (settings.autoFocusCurrentCharge) {
         setTimeout(() => currentSocRef.current?.focus(), 100);
@@ -76,7 +79,10 @@ export function CalculatorScreen({ navigation }: Props) {
   function handleCarSelect(index: number) {
     setSelectedIndex(index);
     targetEditedByUser.current = false;
-    setTargetSoc(String(cars[index].defaultTargetSoc));
+    const car = cars[index];
+    if (car) {
+      setTargetSoc(String(car.defaultTargetSoc));
+    }
   }
 
   function handleTargetChange(value: string) {
