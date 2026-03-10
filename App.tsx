@@ -1,20 +1,54 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { AddEditCarScreen } from './src/screens/AddEditCarScreen';
+import { CalculatorScreen } from './src/screens/CalculatorScreen';
+import { CarManagementScreen } from './src/screens/CarManagementScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
+import { RootStackParamList } from './src/types/navigation';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <StatusBar style="light" />
+        <Stack.Navigator
+          initialRouteName="Calculator"
+          screenOptions={{
+            headerStyle: { backgroundColor: '#111' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: '600' },
+            contentStyle: { backgroundColor: '#111' },
+          }}
+        >
+          <Stack.Screen
+            name="Calculator"
+            component={CalculatorScreen}
+            options={{ title: 'EV Charge Calculator' }}
+          />
+          <Stack.Screen
+            name="CarManagement"
+            component={CarManagementScreen}
+            options={{ title: 'My Cars' }}
+          />
+          <Stack.Screen
+            name="AddEditCar"
+            component={AddEditCarScreen}
+            options={({ route }) => ({
+              title: route.params?.car ? 'Edit Car' : 'Add Car',
+            })}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{ title: 'Settings' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
