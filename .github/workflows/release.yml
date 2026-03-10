@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Set up Java
@@ -32,16 +32,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update app.json with version
+        run: |
+          sed -i 's/"version": "dev"/"version": "${{ steps.get_version.outputs.VERSION }}"/' app.json
+
       - name: Run Expo prebuild
         run: npx expo prebuild --clean --platform android
 
       - name: Build release APK with Gradle
         working-directory: android
         run: ./gradlew assembleRelease
-
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Rename APK
         run: |

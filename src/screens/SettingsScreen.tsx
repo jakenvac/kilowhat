@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Constants from 'expo-constants';
 import { useEffect, useState } from 'react';
 import {
   ScrollView,
@@ -116,6 +117,12 @@ export function SettingsScreen(_props: Props) {
           thumbColor="#fff"
         />
       </View>
+
+      <View style={styles.versionContainer}>
+        <Text style={styles.versionText}>
+          Version {Constants.expoConfig?.version ?? 'unknown'}
+        </Text>
+      </View>
     </ScrollView>
   );
 }
@@ -179,5 +186,13 @@ const styles = StyleSheet.create({
   toggleText: {
     flex: 1,
     gap: 6,
+  },
+  versionContainer: {
+    alignItems: 'center',
+    paddingTop: 16,
+  },
+  versionText: {
+    color: '#444',
+    fontSize: 12,
   },
 });

@@ -2,7 +2,7 @@
   "expo": {
     "name": "KiloWhat?",
     "slug": "kilowhat",
-    "version": "1.0.0",
+    "version": "dev",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
