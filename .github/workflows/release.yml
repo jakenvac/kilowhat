@@ -29,8 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build release APK
-        run: npm run android:release -- --no-install
+      - name: Run Expo prebuild
+        run: npx expo prebuild --clean --platform android
+
+      - name: Build release APK with Gradle
+        working-directory: android
+        run: ./gradlew assembleRelease
 
       - name: Get version from tag
         id: get_version
