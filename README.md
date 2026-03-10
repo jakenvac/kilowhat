@@ -24,10 +24,10 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
 - Edit or delete cars anytime
 
 ### ⚙️ Customizable Settings
-- Configure charger efficiency (default 90%)
-- Set charger max output power (default 7.4 kW)
-- Auto-focus current charge field option
-- Remembers your last entered charge level
+- Configure charger efficiency (default 88%)
+- Set charger max output power (default 7 kW)
+- Auto-focus current charge field (enabled by default)
+- Remembers your last entered charge level (default 50%)
 
 ### 🔒 Privacy First
 - **No internet required** - works completely offline
@@ -91,32 +91,33 @@ The first time you run on iOS or Android, Expo will build the native app locally
 
 ### Adding Your First Car
 
-1. Open the app - you'll see "No cars saved - tap to add one"
-2. Tap the empty card to go to car management
-3. Tap the "+" button in the header
-4. Enter your car's details:
+1. Open the app - you'll see "Add vehicle" button where the vehicle selector would be
+2. Tap "Add vehicle" to go directly to the add car screen
+3. Enter your car's details:
    - **Car name:** e.g., "Zephyr E40"
    - **Battery capacity:** Usable kWh (e.g., 77.4)
    - **Default charge target:** e.g., 80%
-5. Tap "Save"
+4. Tap "Save"
+5. You'll return to the calculator with your vehicle selected
 
 ### Calculating Charging Time
 
-1. Select your car from the vehicle selector
-2. Enter your **current charge** percentage
-3. Enter your **target charge** percentage (or use the default)
+1. Select your car by tapping the vehicle name (opens a modal to switch between vehicles)
+2. Enter your **current charge** percentage (auto-focused by default)
+3. Enter your **target charge** percentage (pre-filled with your car's default)
 4. The app instantly shows:
    - Energy needed in kWh
    - Estimated charging time
-   - Efficiency adjustment applied
+   - Charger efficiency applied
 
 ### Adjusting Settings
 
 1. Tap the gear icon ⚙️ in the top-right corner
 2. Adjust your charger specifications:
-   - **Efficiency:** Typical values are 85-95%
-   - **Max output:** Your charger's power rating in kW
-3. Settings save automatically
+   - **Efficiency:** Typical values are 85-95% (default 88%)
+   - **Max output:** Your charger's power rating in kW (default 7 kW)
+   - **Auto-focus current charge:** Enable/disable automatic focus (default enabled)
+3. All settings save automatically as you change them
 
 ## Technical Details
 
@@ -132,7 +133,7 @@ The first time you run on iOS or Android, Expo will build the native app locally
 
 ```
 src/
-├── screens/      # UI components (Calculator, CarManagement, etc.)
+├── screens/      # UI components (Calculator, AddEditCar, Settings)
 ├── storage/      # Data persistence layer (AsyncStorage)
 └── types/        # TypeScript type definitions
 ```
@@ -181,11 +182,11 @@ Charging Time (hours) = Energy Needed / Charger Max Output
 - Battery: 75 kWh
 - Current charge: 20%
 - Target charge: 80%
-- Charger: 7.4 kW at 90% efficiency
+- Charger: 7 kW at 88% efficiency
 
 ```
-Energy = (75 × (80 - 20)) / 100 / 0.90 = 50 kWh
-Time = 50 / 7.4 = 6.76 hours (6h 46m)
+Energy = (75 × (80 - 20)) / 100 / 0.88 = 51.14 kWh
+Time = 51.14 / 7 = 7.31 hours (7h 18m)
 ```
 
 ## FAQ
@@ -228,7 +229,7 @@ Typical values:
 - **Public Level 2:** 88-93%
 - **DC Fast Charging:** 90-95%
 
-When in doubt, use 90% as a conservative estimate.
+When in doubt, use 88% as a conservative estimate (the app's default).
 
 ## Contributing
 
