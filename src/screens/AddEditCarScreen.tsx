@@ -75,12 +75,12 @@ export function AddEditCarScreen({ route, navigation }: Props) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Field label="Car name" hint="e.g. Tesla Model 3">
+        <Field label="Car name" hint="e.g. Zephyr E40">
           <TextInput
             style={styles.standaloneInput}
             value={name}
             onChangeText={setName}
-            placeholder="e.g. Tesla Model 3"
+            placeholder="e.g. Zephyr E40"
             placeholderTextColor="#555"
             returnKeyType="next"
             autoFocus

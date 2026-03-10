@@ -95,7 +95,7 @@ The first time you run on iOS or Android, Expo will build the native app locally
 2. Tap the empty card to go to car management
 3. Tap the "+" button in the header
 4. Enter your car's details:
-   - **Car name:** e.g., "Tesla Model 3"
+   - **Car name:** e.g., "Zephyr E40"
    - **Battery capacity:** Usable kWh (e.g., 77.4)
    - **Default charge target:** e.g., 80%
 5. Tap "Save"

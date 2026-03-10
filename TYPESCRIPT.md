@@ -473,7 +473,7 @@ function createCar(
   color?: string,
   year?: number
 ): Car {
-  // Hard to call: createCar('Tesla', 75, undefined, undefined, 2023)
+  // Hard to call: createCar('Zephyr', 75, undefined, undefined, 2023)
 }
 ```
 

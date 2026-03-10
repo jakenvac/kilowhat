@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Switch,
@@ -16,7 +15,7 @@ import { RootStackParamList } from '../types/navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
-export function SettingsScreen({ navigation }: Props) {
+export function SettingsScreen(_props: Props) {
   const [efficiency, setEfficiency] = useState(String(DEFAULT_SETTINGS.chargerEfficiency));
   const [maxOutput, setMaxOutput] = useState(String(DEFAULT_SETTINGS.chargerMaxOutputKw));
   const [autoFocus, setAutoFocus] = useState(DEFAULT_SETTINGS.autoFocusCurrentCharge);
@@ -59,13 +58,6 @@ export function SettingsScreen({ navigation }: Props) {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      <Pressable
-        style={styles.manageCarsButton}
-        onPress={() => navigation.navigate('CarManagement')}
-      >
-        <Text style={styles.manageCarsText}>Manage Cars</Text>
-      </Pressable>
-
       <View style={styles.field}>
         <View style={styles.fieldHeader}>
           <Text style={styles.fieldLabel}>Charger efficiency</Text>
@@ -187,17 +179,5 @@ const styles = StyleSheet.create({
   toggleText: {
     flex: 1,
     gap: 6,
-  },
-  manageCarsButton: {
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  manageCarsText: {
-    color: '#aaa',
-    fontSize: 16,
-    fontWeight: '500',
   },
 });

@@ -5,7 +5,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AddEditCarScreen } from './src/screens/AddEditCarScreen';
 import { CalculatorScreen } from './src/screens/CalculatorScreen';
-import { CarManagementScreen } from './src/screens/CarManagementScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { RootStackParamList } from './src/types/navigation';
 
@@ -29,11 +28,6 @@ export default function App() {
             name="Calculator"
             component={CalculatorScreen}
             options={{ title: 'KiloWhat?' }}
-          />
-          <Stack.Screen
-            name="CarManagement"
-            component={CarManagementScreen}
-            options={{ title: 'My Cars' }}
           />
           <Stack.Screen
             name="AddEditCar"
