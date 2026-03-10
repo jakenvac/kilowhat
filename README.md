@@ -4,7 +4,7 @@
 
 A simple, privacy-focused mobile app for calculating electric vehicle charging times and energy requirements. Works completely offline with no account required.
 
-![Platform Support](https://img.shields.io/badge/platform-iOS%20%7C%20Android%20%7C%20Web-blue)
+![Platform Support](https://img.shields.io/badge/platform-Android-blue)
 ![React Native](https://img.shields.io/badge/React%20Native-0.83.2-61dafb)
 ![Expo](https://img.shields.io/badge/Expo-~55.0.5-000020)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178c6)
@@ -43,8 +43,7 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
 
 ### Prerequisites
 - Node.js 18+ and npm/yarn
-- For iOS: macOS with Xcode 15+
-- For Android: Android Studio with SDK 23+
+- Android Studio with SDK 23+
 
 ### Setup
 
@@ -64,28 +63,16 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
    npm start
    ```
 
-4. **Run on your device/emulator**
-   
-   For Android:
+4. **Run on your Android device/emulator**
    ```bash
    npm run android
-   ```
-   
-   For iOS:
-   ```bash
-   npm run ios
-   ```
-   
-   For Web:
-   ```bash
-   npm run web
    ```
 
 ### First Run
 
-The first time you run on iOS or Android, Expo will build the native app locally. This may take several minutes.
+The first time you run the app, Expo will build the native Android app locally. This may take several minutes.
 
-**Note:** This app uses local native builds, not Expo Go. Make sure you have the appropriate development environment set up (Xcode for iOS, Android Studio for Android).
+**Note:** This app uses local native builds, not Expo Go. Make sure you have Android Studio set up with the Android SDK.
 
 ## Usage
 
@@ -197,7 +184,7 @@ We use local native builds to maintain flexibility for adding custom native modu
 
 ### Can I use this with Expo Go?
 
-No, this app requires a development build. Run `npm run ios` or `npm run android` to build and install locally.
+No, this app requires a development build. Run `npm run android` to build and install locally.
 
 ### Does this work offline?
 
@@ -236,8 +223,16 @@ When in doubt, use 88% as a conservative estimate (the app's default).
 Contributions are welcome! Please:
 1. Read AGENTS.md for coding standards
 2. Ensure TypeScript strict mode compliance
-3. Test on both iOS and Android
+3. Test on Android
 4. Update documentation if needed
+
+### Platform Support
+
+**Android:** Fully supported and tested
+
+**iOS:** Planned for future release. The codebase is React Native and should work on iOS with minimal changes, but we need someone with an iOS device to test it. If you'd like to help with iOS support, please open an issue!
+
+**Web:** Not currently supported or planned.
 
 ## License
 
