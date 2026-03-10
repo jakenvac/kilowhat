@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AddEditCarScreen } from './src/screens/AddEditCarScreen';
+import { AddEditChargerProfileScreen } from './src/screens/AddEditChargerProfileScreen';
 import { CalculatorScreen } from './src/screens/CalculatorScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { RootStackParamList } from './src/types/navigation';
@@ -34,6 +35,13 @@ export default function App() {
             component={AddEditCarScreen}
             options={({ route }) => ({
               title: route.params?.car ? 'Edit Car' : 'Add Car',
+            })}
+          />
+          <Stack.Screen
+            name="AddEditChargerProfile"
+            component={AddEditChargerProfileScreen}
+            options={({ route }) => ({
+              title: route.params?.profile ? 'Edit Charger' : 'Add Charger',
             })}
           />
           <Stack.Screen

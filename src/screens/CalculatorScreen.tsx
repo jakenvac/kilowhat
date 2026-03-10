@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
-  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,9 +11,12 @@ import {
 } from 'react-native';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 
+import { SelectionModal } from '../components/SelectionModal';
 import { deleteCar, loadCars } from '../storage/cars';
+import { deleteChargerProfile, loadChargerProfiles } from '../storage/chargerProfiles';
 import { loadSettings, saveSettings } from '../storage/settings';
 import { Car } from '../types/Car';
+import { ChargerProfile } from '../types/ChargerProfile';
 import { DEFAULT_SETTINGS } from '../types/Settings';
 import { RootStackParamList } from '../types/navigation';
 
@@ -32,27 +34,34 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Calculator'>;
 export function CalculatorScreen({ navigation }: Props) {
   const [cars, setCars] = useState<Car[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [chargerProfiles, setChargerProfiles] = useState<ChargerProfile[]>([]);
+  const [selectedChargerIndex, setSelectedChargerIndex] = useState(0);
   const [currentSoc, setCurrentSoc] = useState(String(DEFAULT_SETTINGS.lastCurrentSoc));
   const [targetSoc, setTargetSoc] = useState('');
-  const [efficiency, setEfficiency] = useState(DEFAULT_SETTINGS.chargerEfficiency);
-  const [maxOutputKw, setMaxOutputKw] = useState(DEFAULT_SETTINGS.chargerMaxOutputKw);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isChargerModalVisible, setIsChargerModalVisible] = useState(false);
   const [shouldReopenModal, setShouldReopenModal] = useState(false);
+  const [shouldReopenChargerModal, setShouldReopenChargerModal] = useState(false);
   const targetEditedByUser = useRef(false);
   const currentSocRef = useRef<TextInput>(null);
 
   const selectedCar = cars[selectedIndex] ?? null;
+  const selectedCharger = chargerProfiles[selectedChargerIndex] ?? null;
 
   const fetchData = useCallback(async () => {
-    const [loaded, settings] = await Promise.all([loadCars(), loadSettings()]);
-    setCars(loaded);
-    setEfficiency(settings.chargerEfficiency);
-    setMaxOutputKw(settings.chargerMaxOutputKw);
+    const [loadedCars, loadedProfiles, settings] = await Promise.all([
+      loadCars(),
+      loadChargerProfiles(),
+      loadSettings()
+    ]);
+    setCars(loadedCars);
+    setChargerProfiles(loadedProfiles);
     setCurrentSoc(String(settings.lastCurrentSoc));
-    if (loaded.length > 0) {
+    
+    if (loadedCars.length > 0) {
       setSelectedIndex(0);
       if (!targetEditedByUser.current) {
-        const firstCar = loaded[0];
+        const firstCar = loadedCars[0];
         if (firstCar) {
           setTargetSoc(String(firstCar.defaultTargetSoc));
         }
@@ -61,12 +70,23 @@ export function CalculatorScreen({ navigation }: Props) {
         setTimeout(() => currentSocRef.current?.focus(), 100);
       }
     }
+    
+    if (loadedProfiles.length > 0) {
+      setSelectedChargerIndex(0);
+    }
+    
     // Reopen modal if we were editing a vehicle
     if (shouldReopenModal) {
       setIsModalVisible(true);
       setShouldReopenModal(false);
     }
-  }, [shouldReopenModal]);
+    
+    // Reopen charger modal if we were editing a charger
+    if (shouldReopenChargerModal) {
+      setIsChargerModalVisible(true);
+      setShouldReopenChargerModal(false);
+    }
+  }, [shouldReopenModal, shouldReopenChargerModal]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -93,6 +113,11 @@ export function CalculatorScreen({ navigation }: Props) {
     if (car) {
       setTargetSoc(String(car.defaultTargetSoc));
     }
+  }
+
+  function handleChargerSelect(index: number) {
+    setSelectedChargerIndex(index);
+    setIsChargerModalVisible(false);
   }
 
   function handleTargetChange(value: string) {
@@ -130,8 +155,35 @@ export function CalculatorScreen({ navigation }: Props) {
     );
   }
 
+  async function handleDeleteCharger(chargerId: string) {
+    Alert.alert(
+      'Delete Charger',
+      'Are you sure you want to delete this charger?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteChargerProfile(chargerId);
+              await fetchData();
+              if (chargerProfiles.length === 1) {
+                setIsChargerModalVisible(false);
+              }
+            } catch (error) {
+              Alert.alert('Error', String(error));
+            }
+          },
+        },
+      ]
+    );
+  }
+
   const current = parseFloat(currentSoc);
   const target = parseFloat(targetSoc);
+  const efficiency = selectedCharger?.efficiency ?? DEFAULT_SETTINGS.chargerEfficiency;
+  const maxOutputKw = selectedCharger?.maxOutputKw ?? DEFAULT_SETTINGS.chargerMaxOutputKw;
   const kwhNeeded =
     selectedCar && !isNaN(current) && !isNaN(target)
       ? Math.max(0, (selectedCar.batteryCapacityKwh * (target - current)) / 100) / (efficiency / 100)
@@ -157,6 +209,26 @@ export function CalculatorScreen({ navigation }: Props) {
           >
             <Text style={styles.vehicleName} numberOfLines={1}>
               {selectedCar?.name ?? 'Add vehicle'}
+            </Text>
+            <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
+          </Pressable>
+        </View>
+
+        {/* Charger selector */}
+        <View>
+          <Text style={styles.label}>Charger</Text>
+          <Pressable 
+            style={styles.vehicleSelector}
+            onPress={() => {
+              if (chargerProfiles.length === 0) {
+                navigation.navigate('AddEditChargerProfile', {});
+              } else {
+                setIsChargerModalVisible(true);
+              }
+            }}
+          >
+            <Text style={styles.vehicleName} numberOfLines={1}>
+              {selectedCharger?.name ?? 'Add charger'}
             </Text>
             <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
           </Pressable>
@@ -232,78 +304,52 @@ export function CalculatorScreen({ navigation }: Props) {
     </ScrollView>
 
     {/* Vehicle selection modal */}
-    <Modal
+    <SelectionModal
       visible={isModalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setIsModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Select Vehicle</Text>
-            <Pressable onPress={() => setIsModalVisible(false)} hitSlop={12}>
-              <MaterialDesignIcons name="close" size={24} color="#aaa" />
-            </Pressable>
-          </View>
+      title="Select Vehicle"
+      items={cars}
+      selectedIndex={selectedIndex}
+      getItemKey={(car) => car.id}
+      getItemLabel={(car) => car.name}
+      addButtonLabel="Add Vehicle"
+      onClose={() => setIsModalVisible(false)}
+      onSelect={handleCarSelect}
+      onEdit={(car) => {
+        setShouldReopenModal(true);
+        setIsModalVisible(false);
+        navigation.navigate('AddEditCar', { car });
+      }}
+      onDelete={(car) => handleDeleteCar(car.id)}
+      onAdd={() => {
+        setShouldReopenModal(true);
+        setIsModalVisible(false);
+        navigation.navigate('AddEditCar', {});
+      }}
+    />
 
-          <ScrollView style={styles.modalList}>
-            {cars.map((car, i) => (
-              <View key={car.id} style={styles.vehicleRow}>
-                <Pressable
-                  style={styles.vehicleRowPressable}
-                  onPress={() => handleCarSelect(i)}
-                >
-                  <View style={styles.vehicleRowLeft}>
-                    {i === selectedIndex && (
-                      <MaterialDesignIcons name="check" size={20} color="#00c896" />
-                    )}
-                    <Text style={[
-                      styles.vehicleRowText,
-                      i === selectedIndex && styles.vehicleRowTextSelected
-                    ]}>
-                      {car.name}
-                    </Text>
-                  </View>
-                </Pressable>
-                <View style={styles.vehicleRowActions}>
-                  <Pressable
-                    onPress={() => {
-                      setShouldReopenModal(true);
-                      setIsModalVisible(false);
-                      navigation.navigate('AddEditCar', { car });
-                    }}
-                    hitSlop={8}
-                    style={styles.iconButton}
-                  >
-                    <MaterialDesignIcons name="pencil" size={20} color="#aaa" />
-                  </Pressable>
-                  <Pressable
-                    onPress={() => handleDeleteCar(car.id)}
-                    hitSlop={8}
-                    style={styles.iconButton}
-                  >
-                    <MaterialDesignIcons name="trash-can-outline" size={20} color="#ff6b6b" />
-                  </Pressable>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-
-          <Pressable
-            style={styles.addVehicleButton}
-            onPress={() => {
-              setShouldReopenModal(true);
-              setIsModalVisible(false);
-              navigation.navigate('AddEditCar', {});
-            }}
-          >
-            <MaterialDesignIcons name="plus" size={20} color="#000" />
-            <Text style={styles.addVehicleButtonText}>Add Vehicle</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
+    {/* Charger selection modal */}
+    <SelectionModal
+      visible={isChargerModalVisible}
+      title="Select Charger"
+      items={chargerProfiles}
+      selectedIndex={selectedChargerIndex}
+      getItemKey={(profile) => profile.id}
+      getItemLabel={(profile) => profile.name}
+      addButtonLabel="Add Charger"
+      onClose={() => setIsChargerModalVisible(false)}
+      onSelect={handleChargerSelect}
+      onEdit={(profile) => {
+        setShouldReopenChargerModal(true);
+        setIsChargerModalVisible(false);
+        navigation.navigate('AddEditChargerProfile', { profile });
+      }}
+      onDelete={(profile) => handleDeleteCharger(profile.id)}
+      onAdd={() => {
+        setShouldReopenChargerModal(true);
+        setIsChargerModalVisible(false);
+        navigation.navigate('AddEditChargerProfile', {});
+      }}
+    />
   </>
   );
 }
@@ -342,84 +388,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     flex: 1,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#111',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '80%',
-    paddingBottom: 40,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 24,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
-  },
-  modalTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  modalList: {
-    maxHeight: 400,
-  },
-  vehicleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 4,
-  },
-  vehicleRowPressable: {
-    flex: 1,
-    paddingVertical: 12,
-  },
-  vehicleRowLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  vehicleRowText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '400',
-  },
-  vehicleRowTextSelected: {
-    fontWeight: '600',
-    color: '#00c896',
-  },
-  vehicleRowActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  iconButton: {
-    padding: 8,
-  },
-  addVehicleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#00c896',
-    marginHorizontal: 24,
-    marginTop: 16,
-    paddingVertical: 16,
-    borderRadius: 12,
-    gap: 8,
-  },
-  addVehicleButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '700',
   },
   row: {
     flexDirection: 'row',

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -17,35 +16,13 @@ import { RootStackParamList } from '../types/navigation';
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 export function SettingsScreen(_props: Props) {
-  const [efficiency, setEfficiency] = useState(String(DEFAULT_SETTINGS.chargerEfficiency));
-  const [maxOutput, setMaxOutput] = useState(String(DEFAULT_SETTINGS.chargerMaxOutputKw));
   const [autoFocus, setAutoFocus] = useState(DEFAULT_SETTINGS.autoFocusCurrentCharge);
 
   useEffect(() => {
     loadSettings().then(s => {
-      setEfficiency(String(s.chargerEfficiency));
-      setMaxOutput(String(s.chargerMaxOutputKw));
       setAutoFocus(s.autoFocusCurrentCharge);
     });
   }, []);
-
-  async function handleEfficiencyChange(value: string) {
-    setEfficiency(value);
-    const parsed = parseFloat(value);
-    if (!isNaN(parsed) && parsed > 0 && parsed <= 100) {
-      const current = await loadSettings();
-      await saveSettings({ ...current, chargerEfficiency: parsed });
-    }
-  }
-
-  async function handleMaxOutputChange(value: string) {
-    setMaxOutput(value);
-    const parsed = parseFloat(value);
-    if (!isNaN(parsed) && parsed > 0) {
-      const current = await loadSettings();
-      await saveSettings({ ...current, chargerMaxOutputKw: parsed });
-    }
-  }
 
   async function handleAutoFocusChange(value: boolean) {
     setAutoFocus(value);
@@ -59,50 +36,6 @@ export function SettingsScreen(_props: Props) {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.field}>
-        <View style={styles.fieldHeader}>
-          <Text style={styles.fieldLabel}>Charger efficiency</Text>
-          <Text style={styles.fieldHint}>Typical home 7kW wallbox: 88%</Text>
-        </View>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            value={efficiency}
-            onChangeText={handleEfficiencyChange}
-            keyboardType="numeric"
-            placeholder="88"
-            placeholderTextColor="#555"
-            maxLength={5}
-            returnKeyType="done"
-          />
-          <Text style={styles.unit}>%</Text>
-        </View>
-        <Text style={styles.description}>
-          The percentage of grid energy that actually reaches your battery. Accounts for losses
-          in the wallbox and your car's onboard charger.
-        </Text>
-      </View>
-
-      <View style={styles.field}>
-        <View style={styles.fieldHeader}>
-          <Text style={styles.fieldLabel}>Charger max output</Text>
-          <Text style={styles.fieldHint}>Standard home wallbox: 7kW</Text>
-        </View>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            value={maxOutput}
-            onChangeText={handleMaxOutputChange}
-            keyboardType="decimal-pad"
-            placeholder="7"
-            placeholderTextColor="#555"
-            maxLength={5}
-            returnKeyType="done"
-          />
-          <Text style={styles.unit}>kW</Text>
-        </View>
-      </View>
-
       <View style={styles.toggleRow}>
         <View style={styles.toggleText}>
           <Text style={styles.fieldLabel}>Auto-focus current charge</Text>
