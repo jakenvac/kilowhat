@@ -1,0 +1,61 @@
+name: Build and Release APK
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build release APK
+        run: npm run android:release -- --no-install
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Rename APK
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk \
+             kilowhat-v${{ steps.get_version.outputs.VERSION }}.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: kilowhat-v${{ steps.get_version.outputs.VERSION }}.apk
+          body: |
+            ## KiloWhat? v${{ steps.get_version.outputs.VERSION }}
+            
+            ### Installation
+            Download the APK file below and install it on your Android device.
+            
+            **Note:** You may need to enable "Install from Unknown Sources" in your Android settings.
+            
+            ### Changes
+            See the commit history for details on what's new in this release.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
