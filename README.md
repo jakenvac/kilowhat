@@ -4,7 +4,7 @@
 
 A simple, privacy-focused mobile app for calculating electric vehicle charging times and energy requirements. Works completely offline with no account required.
 
-![Platform Support](https://img.shields.io/badge/platform-Android-blue)
+![Platform Support](https://img.shields.io/badge/platform-Android-green)
 ![React Native](https://img.shields.io/badge/React%20Native-0.83.2-61dafb)
 ![Expo](https://img.shields.io/badge/Expo-~55.0.5-000020)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178c6)
