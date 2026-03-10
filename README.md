@@ -9,6 +9,8 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
 ![Expo](https://img.shields.io/badge/Expo-~55.0.5-000020)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178c6)
 
+[<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="80">](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/jakenvac/kilowhat)
+
 ## Features
 
 ### 🔋 Charging Calculator
@@ -41,11 +43,38 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
 
 ## Installation
 
-### Prerequisites
+### For Users
+
+#### Option 1: Install via Obtainium (Recommended)
+
+[Obtainium](https://github.com/ImranR98/Obtainium) allows you to install and auto-update apps directly from GitHub releases.
+
+1. **Install Obtainium** (if you don't have it):
+   - Download from [F-Droid](https://f-droid.org/packages/dev.imranr.obtainium.fdroid/) or [GitHub](https://github.com/ImranR98/Obtainium/releases)
+
+2. **Add KiloWhat? to Obtainium**:
+   - Click this link on your Android device: [Get it on Obtainium](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/jakenvac/kilowhat)
+   - Or manually add the app in Obtainium using: `https://github.com/jakenvac/kilowhat`
+
+3. **Install and enjoy**:
+   - Obtainium will automatically check for updates and notify you
+
+#### Option 2: Direct APK Download
+
+1. Go to the [Releases page](https://github.com/jakenvac/kilowhat/releases)
+2. Download the latest `kilowhat-vX.X.X.apk` file
+3. Install on your Android device
+4. **Note:** You may need to enable "Install from Unknown Sources" in your Android settings
+
+**Nightly Builds:** Pre-release nightly builds are also available on the releases page for testing the latest features.
+
+### For Developers
+
+#### Prerequisites
 - Node.js 18+ and npm/yarn
 - Android Studio with SDK 23+
 
-### Setup
+#### Setup
 
 1. **Clone the repository**
    ```bash
@@ -68,7 +97,7 @@ A simple, privacy-focused mobile app for calculating electric vehicle charging t
    npm run android
    ```
 
-### First Run
+#### First Run
 
 The first time you run the app, Expo will build the native Android app locally. This may take several minutes.
 
