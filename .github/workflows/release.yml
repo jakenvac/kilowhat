@@ -48,7 +48,20 @@ jobs:
       - name: Run Expo prebuild
         run: npx expo prebuild --clean --platform android
 
-      - name: Build release APK with Gradle
+      - name: Decode and setup keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.keystore
+
+      - name: Create keystore.properties
+        run: |
+          cat > android/keystore.properties <<EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=upload-keystore.keystore
+          EOF
+
+      - name: Build signed release APK with Gradle
         working-directory: android
         run: ./gradlew assembleRelease
 

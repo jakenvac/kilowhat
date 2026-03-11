@@ -31,7 +31,8 @@
     },
     "plugins": [
       "./plugins/withGradleProperties.js",
-      "./plugins/withAndroidStyles.js"
+      "./plugins/withAndroidStyles.js",
+      "./plugins/withAndroidSigning.js"
     ]
   }
 }
