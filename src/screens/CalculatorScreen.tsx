@@ -1,3 +1,4 @@
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -56,7 +57,7 @@ export function CalculatorScreen({ navigation }: Props) {
     setCars(loadedCars);
     setChargerProfiles(loadedProfiles);
     setCurrentSoc(String(settings.lastCurrentSoc));
-    
+
     if (loadedCars.length > 0) {
       setSelectedIndex(0);
       if (!targetEditedByUser.current) {
@@ -69,17 +70,17 @@ export function CalculatorScreen({ navigation }: Props) {
         setTimeout(() => currentSocRef.current?.focus(), 100);
       }
     }
-    
+
     if (loadedProfiles.length > 0) {
       setSelectedChargerIndex(0);
     }
-    
+
     // Reopen modal if we were editing a vehicle
     if (shouldReopenModal) {
       setIsModalVisible(true);
       setShouldReopenModal(false);
     }
-    
+
     // Reopen charger modal if we were editing a charger
     if (shouldReopenChargerModal) {
       setIsChargerModalVisible(true);
@@ -92,7 +93,7 @@ export function CalculatorScreen({ navigation }: Props) {
       headerRight: () => (
         <Pressable onPress={() => navigation.navigate('Settings')} hitSlop={12}>
           <Text style={styles.settingsCog}>
-            <MaterialDesignIcons name="cog" style={styles.settingsCog}/>
+            <MaterialDesignIcons name="cog" style={styles.settingsCog} />
           </Text>
         </Pressable>
       ),
@@ -192,164 +193,170 @@ export function CalculatorScreen({ navigation }: Props) {
 
   return (
     <>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="height"
+        keyboardVerticalOffset={100}
+      >
+        <View style={styles.container}>
           {/* Result - Calculator Display */}
           <View style={styles.resultCard}>
-          {/* Always rendered to hold the card size; hidden when no vehicle or no input */}
-          <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, alignItems: 'center', gap: 4 }}>
-            <Text style={styles.resultLabel}>Energy needed</Text>
-            <Text style={styles.resultValue}>
-              {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
-            </Text>
-            <Text style={styles.resultUnit}>kWh</Text>
-            {/* Always reserve space for charge time line */}
-            <Text style={styles.chargeTime}>
-              {chargeTime !== null ? `≈ ${chargeTime} estimated charge time` : ' '}
-            </Text>
-            <Text style={styles.resultEfficiency}>at {efficiency}% charger efficiency</Text>
-          </View>
-          {/* Prompt overlaid when no vehicle */}
-          {!selectedCar && (
-            <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
-              <Text style={styles.resultPrompt}>Add a vehicle to calculate charge time</Text>
+            {/* Always rendered to hold the card size; hidden when no vehicle or no input */}
+            <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, alignItems: 'center', gap: 4 }}>
+              <Text style={styles.resultLabel}>Energy needed</Text>
+              <Text style={styles.resultValue}>
+                {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
+              </Text>
+              <Text style={styles.resultUnit}>kWh</Text>
+              {/* Always reserve space for charge time line */}
+              <Text style={styles.chargeTime}>
+                {chargeTime !== null ? `≈ ${chargeTime} estimated charge time` : ' '}
+              </Text>
+              <Text style={styles.resultEfficiency}>at {efficiency}% charger efficiency</Text>
             </View>
-          )}
-          {/* Prompt overlaid when no input */}
-          {selectedCar && !currentSoc && (
-            <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
-              <Text style={styles.resultPrompt}>Enter your current charge to get started</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Car selector */}
-        <View>
-          <Text style={styles.label}>Vehicle</Text>
-          <Pressable 
-            style={styles.vehicleSelector}
-            onPress={() => {
-              if (cars.length === 0) {
-                navigation.navigate('AddEditCar', {});
-              } else {
-                setIsModalVisible(true);
-              }
-            }}
-          >
-            <Text style={styles.vehicleName} numberOfLines={1}>
-              {selectedCar?.name ?? 'Add vehicle'}
-            </Text>
-            <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
-          </Pressable>
-        </View>
-
-        {/* Charger selector */}
-        <View>
-          <Text style={styles.label}>Charger</Text>
-          <Pressable 
-            style={styles.vehicleSelector}
-            onPress={() => {
-              if (chargerProfiles.length === 0) {
-                navigation.navigate('AddEditChargerProfile', {});
-              } else {
-                setIsChargerModalVisible(true);
-              }
-            }}
-          >
-            <Text style={styles.vehicleName} numberOfLines={1}>
-              {selectedCharger?.name ?? 'Add charger'}
-            </Text>
-            <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
-          </Pressable>
-        </View>
-
-        {/* Inputs */}
-        <View style={styles.row}>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Current charge</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                ref={currentSocRef}
-                style={styles.input}
-                keyboardType="numeric"
-                value={currentSoc}
-                onChangeText={handleCurrentSocChange}
-                placeholder="0"
-                placeholderTextColor="#555"
-                maxLength={3}
-                returnKeyType="done"
-              />
-              <Text style={styles.unit}>%</Text>
-            </View>
+            {/* Prompt overlaid when no vehicle */}
+            {!selectedCar && (
+              <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
+                <Text style={styles.resultPrompt}>Add a vehicle to calculate charge time</Text>
+              </View>
+            )}
+            {/* Prompt overlaid when no input */}
+            {selectedCar && !currentSoc && (
+              <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
+                <Text style={styles.resultPrompt}>Enter your current charge to get started</Text>
+              </View>
+            )}
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Target charge</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={targetSoc}
-                onChangeText={handleTargetChange}
-                placeholder="80"
-                placeholderTextColor="#555"
-                maxLength={3}
-                returnKeyType="done"
-              />
-              <Text style={styles.unit}>%</Text>
+          {/* Car selector */}
+          <View>
+            <Text style={styles.label}>Vehicle</Text>
+            <Pressable
+              style={styles.vehicleSelector}
+              onPress={() => {
+                if (cars.length === 0) {
+                  navigation.navigate('AddEditCar', {});
+                } else {
+                  setIsModalVisible(true);
+                }
+              }}
+            >
+              <Text style={styles.vehicleName} numberOfLines={1}>
+                {selectedCar?.name ?? 'Add vehicle'}
+              </Text>
+              <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
+            </Pressable>
+          </View>
+
+          {/* Charger selector */}
+          <View>
+            <Text style={styles.label}>Charger</Text>
+            <Pressable
+              style={styles.vehicleSelector}
+              onPress={() => {
+                if (chargerProfiles.length === 0) {
+                  navigation.navigate('AddEditChargerProfile', {});
+                } else {
+                  setIsChargerModalVisible(true);
+                }
+              }}
+            >
+              <Text style={styles.vehicleName} numberOfLines={1}>
+                {selectedCharger?.name ?? 'Add charger'}
+              </Text>
+              <MaterialDesignIcons name="chevron-right" size={20} color="#00c896" />
+            </Pressable>
+          </View>
+
+          {/* Inputs */}
+          <View style={styles.row}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Current charge</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  ref={currentSocRef}
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={currentSoc}
+                  onChangeText={handleCurrentSocChange}
+                  placeholder="0"
+                  placeholderTextColor="#555"
+                  maxLength={3}
+                  returnKeyType="done"
+                />
+                <Text style={styles.unit}>%</Text>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Target charge</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={targetSoc}
+                  onChangeText={handleTargetChange}
+                  placeholder="80"
+                  placeholderTextColor="#555"
+                  maxLength={3}
+                  returnKeyType="done"
+                />
+                <Text style={styles.unit}>%</Text>
+              </View>
             </View>
           </View>
+
         </View>
 
-      </View>
+        {/* Vehicle selection modal */}
+        <SelectionModal
+          visible={isModalVisible}
+          title="Select Vehicle"
+          items={cars}
+          selectedIndex={selectedIndex}
+          getItemKey={(car) => car.id}
+          getItemLabel={(car) => car.name}
+          addButtonLabel="Add Vehicle"
+          onClose={() => setIsModalVisible(false)}
+          onSelect={handleCarSelect}
+          onEdit={(car) => {
+            setShouldReopenModal(true);
+            setIsModalVisible(false);
+            navigation.navigate('AddEditCar', { car });
+          }}
+          onDelete={(car) => handleDeleteCar(car.id)}
+          onAdd={() => {
+            setShouldReopenModal(true);
+            setIsModalVisible(false);
+            navigation.navigate('AddEditCar', {});
+          }}
+        />
 
-    {/* Vehicle selection modal */}
-    <SelectionModal
-      visible={isModalVisible}
-      title="Select Vehicle"
-      items={cars}
-      selectedIndex={selectedIndex}
-      getItemKey={(car) => car.id}
-      getItemLabel={(car) => car.name}
-      addButtonLabel="Add Vehicle"
-      onClose={() => setIsModalVisible(false)}
-      onSelect={handleCarSelect}
-      onEdit={(car) => {
-        setShouldReopenModal(true);
-        setIsModalVisible(false);
-        navigation.navigate('AddEditCar', { car });
-      }}
-      onDelete={(car) => handleDeleteCar(car.id)}
-      onAdd={() => {
-        setShouldReopenModal(true);
-        setIsModalVisible(false);
-        navigation.navigate('AddEditCar', {});
-      }}
-    />
-
-    {/* Charger selection modal */}
-    <SelectionModal
-      visible={isChargerModalVisible}
-      title="Select Charger"
-      items={chargerProfiles}
-      selectedIndex={selectedChargerIndex}
-      getItemKey={(profile) => profile.id}
-      getItemLabel={(profile) => profile.name}
-      addButtonLabel="Add Charger"
-      onClose={() => setIsChargerModalVisible(false)}
-      onSelect={handleChargerSelect}
-      onEdit={(profile) => {
-        setShouldReopenChargerModal(true);
-        setIsChargerModalVisible(false);
-        navigation.navigate('AddEditChargerProfile', { profile });
-      }}
-      onDelete={(profile) => handleDeleteCharger(profile.id)}
-      onAdd={() => {
-        setShouldReopenChargerModal(true);
-        setIsChargerModalVisible(false);
-        navigation.navigate('AddEditChargerProfile', {});
-      }}
-    />
-  </>
+        {/* Charger selection modal */}
+        <SelectionModal
+          visible={isChargerModalVisible}
+          title="Select Charger"
+          items={chargerProfiles}
+          selectedIndex={selectedChargerIndex}
+          getItemKey={(profile) => profile.id}
+          getItemLabel={(profile) => profile.name}
+          addButtonLabel="Add Charger"
+          onClose={() => setIsChargerModalVisible(false)}
+          onSelect={handleChargerSelect}
+          onEdit={(profile) => {
+            setShouldReopenChargerModal(true);
+            setIsChargerModalVisible(false);
+            navigation.navigate('AddEditChargerProfile', { profile });
+          }}
+          onDelete={(profile) => handleDeleteCharger(profile.id)}
+          onAdd={() => {
+            setShouldReopenChargerModal(true);
+            setIsChargerModalVisible(false);
+            navigation.navigate('AddEditChargerProfile', {});
+          }}
+        />
+      </KeyboardAvoidingView>
+    </>
   );
 }
 
@@ -418,8 +425,8 @@ const styles = StyleSheet.create({
   },
   resultCard: {
     flex: 1,
-    minHeight: 180,
-    maxHeight: 250,
+    minHeight: 50,
+    maxHeight: '50%',
     backgroundColor: '#1a1a1a',
     borderRadius: 8,
     borderWidth: 1,

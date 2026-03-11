@@ -37,8 +37,8 @@ export function SelectionModal<T>({
       transparent={true}
       onRequestClose={onClose}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
+      <Pressable style={styles.modalOverlay} onPress={onClose}>
+        <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{title}</Text>
             <Pressable onPress={onClose} hitSlop={12}>
@@ -92,8 +92,8 @@ export function SelectionModal<T>({
             <MaterialDesignIcons name="plus" size={20} color="#000" />
             <Text style={styles.addButtonText}>{addButtonLabel}</Text>
           </Pressable>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 }

@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { AddEditCarScreen } from './src/screens/AddEditCarScreen';
 import { AddEditChargerProfileScreen } from './src/screens/AddEditChargerProfileScreen';
@@ -14,43 +15,45 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <Stack.Navigator
-          initialRouteName="Calculator"
-          screenOptions={{
-            headerStyle: { backgroundColor: '#111' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: '600' },
-            contentStyle: { backgroundColor: '#111' },
-          }}
-        >
-          <Stack.Screen
-            name="Calculator"
-            component={CalculatorScreen}
-            options={{ title: 'KiloWhat?' }}
-          />
-          <Stack.Screen
-            name="AddEditCar"
-            component={AddEditCarScreen}
-            options={({ route }) => ({
-              title: route.params?.car ? 'Edit Car' : 'Add Car',
-            })}
-          />
-          <Stack.Screen
-            name="AddEditChargerProfile"
-            component={AddEditChargerProfileScreen}
-            options={({ route }) => ({
-              title: route.params?.profile ? 'Edit Charger' : 'Add Charger',
-            })}
-          />
-          <Stack.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{ title: 'Settings' }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <KeyboardProvider>
+        <NavigationContainer>
+          <StatusBar style="light" />
+          <Stack.Navigator
+            initialRouteName="Calculator"
+            screenOptions={{
+              headerStyle: { backgroundColor: '#111' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: '600' },
+              contentStyle: { backgroundColor: '#111' },
+            }}
+          >
+            <Stack.Screen
+              name="Calculator"
+              component={CalculatorScreen}
+              options={{ title: 'KiloWhat?' }}
+            />
+            <Stack.Screen
+              name="AddEditCar"
+              component={AddEditCarScreen}
+              options={({ route }) => ({
+                title: route.params?.car ? 'Edit Car' : 'Add Car',
+              })}
+            />
+            <Stack.Screen
+              name="AddEditChargerProfile"
+              component={AddEditChargerProfileScreen}
+              options={({ route }) => ({
+                title: route.params?.profile ? 'Edit Charger' : 'Add Charger',
+              })}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ title: 'Settings' }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }
