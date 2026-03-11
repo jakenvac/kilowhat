@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -193,7 +192,36 @@ export function CalculatorScreen({ navigation }: Props) {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <View style={styles.container}>
+          {/* Result - Calculator Display */}
+          <View style={styles.resultCard}>
+          {/* Always rendered to hold the card size; hidden when no vehicle or no input */}
+          <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, alignItems: 'center', gap: 4 }}>
+            <Text style={styles.resultLabel}>Energy needed</Text>
+            <Text style={styles.resultValue}>
+              {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
+            </Text>
+            <Text style={styles.resultUnit}>kWh</Text>
+            {/* Always reserve space for charge time line */}
+            <Text style={styles.chargeTime}>
+              {chargeTime !== null ? `≈ ${chargeTime} estimated charge time` : ' '}
+            </Text>
+            <Text style={styles.resultEfficiency}>at {efficiency}% charger efficiency</Text>
+          </View>
+          {/* Prompt overlaid when no vehicle */}
+          {!selectedCar && (
+            <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
+              <Text style={styles.resultPrompt}>Add a vehicle to calculate charge time</Text>
+            </View>
+          )}
+          {/* Prompt overlaid when no input */}
+          {selectedCar && !currentSoc && (
+            <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
+              <Text style={styles.resultPrompt}>Enter your current charge to get started</Text>
+            </View>
+          )}
+        </View>
+
         {/* Car selector */}
         <View>
           <Text style={styles.label}>Vehicle</Text>
@@ -234,74 +262,45 @@ export function CalculatorScreen({ navigation }: Props) {
           </Pressable>
         </View>
 
-      {/* Inputs */}
-      <View style={styles.row}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Current charge</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              ref={currentSocRef}
-              style={styles.input}
-              keyboardType="numeric"
-              value={currentSoc}
-              onChangeText={handleCurrentSocChange}
-              placeholder="0"
-              placeholderTextColor="#555"
-              maxLength={3}
-              returnKeyType="done"
-            />
-            <Text style={styles.unit}>%</Text>
+        {/* Inputs */}
+        <View style={styles.row}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Current charge</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                ref={currentSocRef}
+                style={styles.input}
+                keyboardType="numeric"
+                value={currentSoc}
+                onChangeText={handleCurrentSocChange}
+                placeholder="0"
+                placeholderTextColor="#555"
+                maxLength={3}
+                returnKeyType="done"
+              />
+              <Text style={styles.unit}>%</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Target charge</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={targetSoc}
+                onChangeText={handleTargetChange}
+                placeholder="80"
+                placeholderTextColor="#555"
+                maxLength={3}
+                returnKeyType="done"
+              />
+              <Text style={styles.unit}>%</Text>
+            </View>
           </View>
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Target charge</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={targetSoc}
-              onChangeText={handleTargetChange}
-              placeholder="80"
-              placeholderTextColor="#555"
-              maxLength={3}
-              returnKeyType="done"
-            />
-            <Text style={styles.unit}>%</Text>
-          </View>
-        </View>
       </View>
-
-      {/* Result */}
-      <View style={styles.resultCard}>
-        {/* Always rendered to hold the card size; hidden when no vehicle or no input */}
-        <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, alignItems: 'center', gap: 4 }}>
-          <Text style={styles.resultLabel}>Energy needed</Text>
-          <Text style={styles.resultValue}>
-            {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
-          </Text>
-          <Text style={styles.resultUnit}>kWh</Text>
-          {/* Always reserve space for charge time line */}
-          <Text style={styles.chargeTime}>
-            {chargeTime !== null ? `≈ ${chargeTime} estimated charge time` : ' '}
-          </Text>
-          <Text style={styles.resultEfficiency}>at {efficiency}% charger efficiency</Text>
-        </View>
-        {/* Prompt overlaid when no vehicle */}
-        {!selectedCar && (
-          <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
-            <Text style={styles.resultPrompt}>Add a vehicle to calculate charge time</Text>
-          </View>
-        )}
-        {/* Prompt overlaid when no input */}
-        {selectedCar && !currentSoc && (
-          <View style={[StyleSheet.absoluteFill, styles.resultPromptContainer]}>
-            <Text style={styles.resultPrompt}>Enter your current charge to get started</Text>
-          </View>
-        )}
-      </View>
-
-    </ScrollView>
 
     {/* Vehicle selection modal */}
     <SelectionModal
@@ -360,32 +359,32 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   container: {
+    flex: 1,
     padding: 24,
     gap: 20,
-    flexGrow: 1,
   },
   label: {
     color: '#aaa',
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '500',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   vehicleSelector: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#1a1a1a',
-    borderRadius: 12,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: '#333',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   vehicleName: {
     color: '#00c896',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     flex: 1,
   },
@@ -400,7 +399,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#1a1a1a',
-    borderRadius: 12,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: '#333',
     paddingHorizontal: 16,
@@ -418,12 +417,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   resultCard: {
+    flex: 1,
+    minHeight: 180,
+    maxHeight: 250,
     backgroundColor: '#1a1a1a',
-    borderRadius: 16,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#2a2a2a',
-    padding: 32,
+    paddingVertical: 24,
+    paddingHorizontal: 32,
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 4,
   },
   resultPromptContainer: {
