@@ -1,0 +1,15 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#111111" rx="180"/>
+  
+  <!-- kW? text - bigger and using Open Sans -->
+  <text 
+    x="512" 
+    y="600" 
+    font-family="Open Sans" 
+    font-size="420" 
+    font-weight="800" 
+    fill="#00c896" 
+    text-anchor="middle"
+    dominant-baseline="middle">kW?</text>
+</svg>
