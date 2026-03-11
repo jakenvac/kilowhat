@@ -20,15 +20,6 @@ import { ChargerProfile } from '../types/ChargerProfile';
 import { DEFAULT_SETTINGS } from '../types/Settings';
 import { RootStackParamList } from '../types/navigation';
 
-function formatChargeTime(hours: number): string {
-  if (hours <= 0) return '0m';
-  const h = Math.floor(hours);
-  const m = Math.round((hours - h) * 60);
-  if (h === 0) return `${m}m`;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
-}
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Calculator'>;
 
 export function CalculatorScreen({ navigation }: Props) {
@@ -189,7 +180,7 @@ export function CalculatorScreen({ navigation }: Props) {
       ? Math.max(0, (selectedCar.batteryCapacityKwh * (target - current)) / 100) / (efficiency / 100)
       : null;
 
-  const chargeTime = kwhNeeded !== null ? formatChargeTime(kwhNeeded / maxOutputKw) : null;
+  const chargeTimeHours = kwhNeeded !== null ? kwhNeeded / maxOutputKw : null;
 
   return (
     <>
@@ -202,17 +193,29 @@ export function CalculatorScreen({ navigation }: Props) {
           {/* Result - Calculator Display */}
           <View style={styles.resultCard}>
             {/* Always rendered to hold the card size; hidden when no vehicle or no input */}
-            <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, alignItems: 'center', gap: 4 }}>
-              <Text style={styles.resultLabel}>Energy needed</Text>
-              <Text style={styles.resultValue}>
-                {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
-              </Text>
-              <Text style={styles.resultUnit}>kWh</Text>
-              {/* Always reserve space for charge time line */}
-              <Text style={styles.chargeTime}>
-                {chargeTime !== null ? `≈ ${chargeTime} estimated charge time` : ' '}
-              </Text>
-              <Text style={styles.resultEfficiency}>at {efficiency}% charger efficiency</Text>
+            <View style={{ opacity: selectedCar && currentSoc ? 1 : 0, width: '100%' }}>
+              <View style={styles.resultRow}>
+                {/* Energy needed */}
+                <View style={styles.resultColumn}>
+                  <Text style={styles.resultLabel}>Energy</Text>
+                  <Text style={styles.resultValue}>
+                    {kwhNeeded !== null ? kwhNeeded.toFixed(1) : '—'}
+                  </Text>
+                  <Text style={styles.resultUnit}>kWh</Text>
+                </View>
+
+                {/* Vertical separator */}
+                <View style={styles.resultSeparator} />
+
+                {/* Time needed */}
+                <View style={styles.resultColumn}>
+                  <Text style={styles.resultLabel}>Time</Text>
+                  <Text style={styles.resultValue}>
+                    {chargeTimeHours !== null ? chargeTimeHours.toFixed(1) : '—'}
+                  </Text>
+                  <Text style={styles.resultUnit}>hours</Text>
+                </View>
+              </View>
             </View>
             {/* Prompt overlaid when no vehicle */}
             {!selectedCar && (
@@ -390,7 +393,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   vehicleName: {
-    color: '#00c896',
+    color: '#fff',
     fontSize: 14,
     fontWeight: '500',
     flex: 1,
@@ -424,9 +427,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   resultCard: {
-    flex: 1,
+    flexShrink: 1,
     minHeight: 50,
-    maxHeight: '50%',
     backgroundColor: '#1a1a1a',
     borderRadius: 8,
     borderWidth: 1,
@@ -435,7 +437,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  resultRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  resultColumn: {
+    alignItems: 'center',
     gap: 4,
+    flex: 1,
+  },
+  resultSeparator: {
+    width: 1,
+    backgroundColor: '#2a2a2a',
+    alignSelf: 'stretch',
   },
   resultPromptContainer: {
     alignItems: 'center',
@@ -464,16 +480,5 @@ const styles = StyleSheet.create({
     color: '#555',
     fontSize: 20,
     fontWeight: '400',
-  },
-  chargeTime: {
-    color: '#aaa',
-    fontSize: 15,
-    fontWeight: '400',
-    marginTop: 12,
-  },
-  resultEfficiency: {
-    color: '#333',
-    fontSize: 12,
-    marginTop: 4,
   },
 });
