@@ -5,14 +5,15 @@
     "version": "dev",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#111111"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.twilsoft.kilowhat"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "./plugins/withGradleProperties.js"
+      "./plugins/withGradleProperties.js",
+      "./plugins/withAndroidStyles.js"
     ]
   }
 }

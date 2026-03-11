@@ -1,10 +1,10 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Monochrome version - white text - bigger and Open Sans -->
+  <!-- Monochrome version - white text - even smaller -->
   <text 
     x="512" 
     y="600" 
     font-family="Open Sans" 
-    font-size="420" 
+    font-size="280" 
     font-weight="800" 
     fill="#FFFFFF" 
     text-anchor="middle"

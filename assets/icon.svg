@@ -2,12 +2,12 @@
   <!-- Background -->
   <rect width="1024" height="1024" fill="#111111" rx="180"/>
   
-  <!-- kW? text - bigger and using Open Sans -->
+  <!-- kW? text - even smaller -->
   <text 
     x="512" 
     y="600" 
     font-family="Open Sans" 
-    font-size="420" 
+    font-size="280" 
     font-weight="800" 
     fill="#00c896" 
     text-anchor="middle"
